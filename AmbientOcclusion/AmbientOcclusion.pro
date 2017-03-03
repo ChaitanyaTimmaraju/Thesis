@@ -1,5 +1,4 @@
-QT += core
-QT -= gui
+QT += core gui
 
 CONFIG += c++11
 
@@ -9,4 +8,20 @@ CONFIG -= app_bundle
 
 TEMPLATE = app
 
-SOURCES += main.cpp
+SOURCES += main.cpp \
+    window.cpp \
+    transform3d.cpp \
+    input.cpp
+
+HEADERS += \
+    window.h \
+    vertex.h \
+    transform3d.h \
+    input.h
+
+RESOURCES += \
+    resources.qrc
+
+DISTFILES += \
+    shaders/simple.frag \
+    shaders/simple.vert
