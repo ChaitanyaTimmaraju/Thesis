@@ -11,13 +11,15 @@ TEMPLATE = app
 SOURCES += main.cpp \
     window.cpp \
     transform3d.cpp \
-    input.cpp
+    input.cpp \
+    camera3d.cpp
 
 HEADERS += \
     window.h \
     vertex.h \
     transform3d.h \
-    input.h
+    input.h \
+    camera3d.h
 
 RESOURCES += \
     resources.qrc

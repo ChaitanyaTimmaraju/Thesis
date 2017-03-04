@@ -2,7 +2,9 @@
 #include<QDebug>
 #include<QString>
 #include<QOpenGLShaderProgram>
+#include<QKeyEvent>
 #include "vertex.h"
+#include "input.h"
 
 // Front Verticies
 #define VERTEX_FTR Vertex( QVector3D( 0.5f,  0.5f,  0.5f), QVector3D( 1.0f, 0.0f, 0.0f ) )
@@ -83,7 +85,8 @@ void Window::initializeGL()
 
         //Cache Uniform Locations
         u_modelToWorld = m_program->uniformLocation("modelToWorld");
-        u_worldToView  = m_program->uniformLocation("worldToView");
+        u_worldToCamera = m_program->uniformLocation("worldToCamera");
+        u_cameraToView = m_program->uniformLocation("cameraToView");
 
         //Create Buffer.
         m_vertex.create();
@@ -117,7 +120,8 @@ void Window::paintGL()
     //clear
     glClear(GL_COLOR_BUFFER_BIT);
     m_program->bind();
-    m_program->setUniformValue(u_worldToView,m_projection);
+    m_program->setUniformValue(u_worldToCamera, m_camera.toMatrix());
+    m_program->setUniformValue(u_cameraToView, m_projection);
     {
         m_object.bind();
         m_program->setUniformValue(u_modelToWorld,m_transform.toMatrix());
@@ -128,6 +132,49 @@ void Window::paintGL()
 }
 void Window::update()
 {
+
+    // Update input
+      Input::update();
+
+      // Camera Transformation
+      if (Input::buttonPressed(Qt::RightButton))
+      {
+        static const float transSpeed = 0.5f;
+        static const float rotSpeed   = 0.5f;
+
+        // Handle rotations
+        m_camera.rotate(-rotSpeed * Input::mouseDelta().x(), Camera3D::LocalUp);
+        m_camera.rotate(-rotSpeed * Input::mouseDelta().y(), m_camera.right());
+
+        // Handle translations
+        QVector3D translation;
+        if (Input::keyPressed(Qt::Key_W))
+        {
+          translation += m_camera.forward();
+        }
+        if (Input::keyPressed(Qt::Key_S))
+        {
+          translation -= m_camera.forward();
+        }
+        if (Input::keyPressed(Qt::Key_A))
+        {
+          translation -= m_camera.right();
+        }
+        if (Input::keyPressed(Qt::Key_D))
+        {
+          translation += m_camera.right();
+        }
+        if (Input::keyPressed(Qt::Key_Q))
+        {
+          translation -= m_camera.up();
+        }
+        if (Input::keyPressed(Qt::Key_E))
+        {
+          translation += m_camera.up();
+        }
+        m_camera.translate(transSpeed * translation);
+      }
+
   m_transform.rotate(1.0,QVector3D(0.4f,0.3f,0.3f));
 
   QOpenGLWindow::update();
@@ -163,4 +210,39 @@ void Window::printContextInformation()
 #undef CASE
   // qPrintable() will print our QString w/o quotes around it.
  qDebug()<<qPrintable(glType)<<qPrintable(glVersion)<<"("<<qPrintable(glProfile)<<")";
+}
+
+void Window::keyPressEvent(QKeyEvent *event)
+{
+
+  if (event->isAutoRepeat())
+  {
+    event->ignore();
+  }
+  else
+  {
+    Input::registerKeyPress(event->key());
+  }
+}
+
+void Window::keyReleaseEvent(QKeyEvent *event)
+{
+  if (event->isAutoRepeat())
+  {
+    event->ignore();
+  }
+  else
+  {
+    Input::registerKeyRelease(event->key());
+  }
+}
+
+void Window::mousePressEvent(QMouseEvent *event)
+{
+  Input::registerMousePress(event->button());
+}
+
+void Window::mouseReleaseEvent(QMouseEvent *event)
+{
+  Input::registerMouseRelease(event->button());
 }

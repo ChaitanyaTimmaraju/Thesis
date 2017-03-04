@@ -10,6 +10,7 @@ for Qt5 widgets module*/
 #include<QOpenGLVertexArrayObject>
 #include <QMatrix4x4>
 #include "transform3d.h"
+#include "camera3d.h"
 
 class QOpenGLShaderProgram;
 
@@ -29,6 +30,12 @@ public:
     void paintGL();
     void teardownGL();
 
+protected:
+  void keyPressEvent(QKeyEvent *event);
+  void keyReleaseEvent(QKeyEvent *event);
+  void mousePressEvent(QMouseEvent *event);
+  void mouseReleaseEvent(QMouseEvent *event);
+
 protected slots:
     void update();
 
@@ -43,8 +50,10 @@ private:
 
     //shader Information
     int u_modelToWorld;
-    int u_worldToView;
+    int u_worldToCamera;
+    int u_cameraToView;
     QMatrix4x4 m_projection;
+    Camera3D m_camera;
     Transform3D m_transform;
 };
 
