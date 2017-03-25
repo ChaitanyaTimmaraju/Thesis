@@ -85,6 +85,7 @@ static inline void Update(Container &container)
   std::for_each(container.begin(), container.end(), &UpdateStates<TPair>);
 }
 
+
 /*******************************************************************************
  * Input Implementation
  ******************************************************************************/

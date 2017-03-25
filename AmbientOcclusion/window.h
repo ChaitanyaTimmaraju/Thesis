@@ -3,17 +3,17 @@
 /*Inherits Qt5Gui-based classes.Allows us to provide OpenGL abstractions without need
 for Qt5 widgets module*/
 #include<QOpenGLWindow>
-
 /*Access to QOpenGL ES 2.0 API*/
 #include<QOpenGLFunctions>
-#include<QOpenGLBuffer>
-#include<QOpenGLVertexArrayObject>
 #include <QMatrix4x4>
 #include "transform3d.h"
-#include "camera3d.h"
+#include <QKeyEvent>
+#include <QMap>
+#include <QString>
+#include <QOpenGLVertexArrayObject>
+#include <vector>
 
-class QOpenGLShaderProgram;
-
+class ModelLoader;
 class Window : public QOpenGLWindow,
                protected QOpenGLFunctions
 {
@@ -24,37 +24,25 @@ class Window : public QOpenGLWindow,
 public:
     Window();
     ~Window();
-
     void initializeGL();
     void resizeGL(int width,int height);
     void paintGL();
     void teardownGL();
+    void keyPressEvent(QKeyEvent *e);
+    void delay(float f);
 
-protected:
-  void keyPressEvent(QKeyEvent *event);
-  void keyReleaseEvent(QKeyEvent *event);
-  void mousePressEvent(QMouseEvent *event);
-  void mouseReleaseEvent(QMouseEvent *event);
+    QMap<QString,QString> objectFilePairs;
+    Transform3D m_transform;
+    QMatrix4x4 m_projection;
+    std::vector<ModelLoader*> models;
+
 
 protected slots:
     void update();
 
 private:
-    //OpenGL state information
-    QOpenGLBuffer m_vertex;
-    QOpenGLVertexArrayObject m_object;
-    QOpenGLShaderProgram *m_program;
-
     //private Helpers
     void printContextInformation();
-
-    //shader Information
-    int u_modelToWorld;
-    int u_worldToCamera;
-    int u_cameraToView;
-    QMatrix4x4 m_projection;
-    Camera3D m_camera;
-    Transform3D m_transform;
 };
 
 #endif // WINDOW_H

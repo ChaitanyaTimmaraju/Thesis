@@ -1,6 +1,26 @@
 <RCC>
     <qresource prefix="/">
-        <file>shaders/simple.frag</file>
-        <file>shaders/simple.vert</file>
+        <file>models/cowVNT.obj</file>
+        <file>models/aDolphinVNT.obj</file>
+        <file>models/al_TVNT.obj</file>
+        <file>models/bonesVNT.obj</file>
+        <file>models/bunnyVNT.obj</file>
+        <file>models/cubeAltFTVNT.obj</file>
+        <file>models/dragonVNT.obj</file>
+        <file>models/faceVNT.obj</file>
+        <file>models/fandiskVNT.obj</file>
+        <file>models/gourdVNT.obj</file>
+        <file>models/mannVNT.obj</file>
+        <file>models/shuttleTVNT.obj</file>
+        <file>models/soccerballTVNT.obj</file>
+        <file>models/stegosaurusVNT.obj</file>
+        <file>models/tetrahedronVNT.obj</file>
+        <file>models/triceratopsVNT.obj</file>
+        <file>models/v2VNT.obj</file>
+        <file>shaders/simple.geom</file>
+        <file>shaders/normalshader.frag</file>
+        <file>shaders/normalshader.vert</file>
+        <file>shaders/FirstPass.frag</file>
+        <file>shaders/FirstPass.vert</file>
     </qresource>
 </RCC>
