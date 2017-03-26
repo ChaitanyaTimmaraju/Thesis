@@ -10,7 +10,6 @@ for Qt5 widgets module*/
 #include <QKeyEvent>
 #include <QMap>
 #include <QString>
-#include <QOpenGLVertexArrayObject>
 #include <vector>
 
 class ModelLoader;

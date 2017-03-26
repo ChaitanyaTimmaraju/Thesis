@@ -12,18 +12,27 @@ SOURCES += main.cpp \
     window.cpp \
     transform3d.cpp \
     input.cpp \
-    camera3d.cpp
+    modelloader.cpp \
+    shaderhandler.cpp \
+    firstpass.cpp
 
 HEADERS += \
     window.h \
     vertex.h \
     transform3d.h \
     input.h \
-    camera3d.h
+    modelloader.h \
+    shaderhandler.h \
+    passinterface.h \
+    firstpass.h
 
 RESOURCES += \
     resources.qrc
 
 DISTFILES += \
-    shaders/simple.frag \
-    shaders/simple.vert
+    models/cowVNT.obj \
+    shaders/simple.geom \
+    shaders/normalshader.vert \
+    shaders/normalshader.frag \
+    shaders/FirstPass.vert \
+    shaders/FirstPass.frag

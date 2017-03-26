@@ -4,7 +4,6 @@
 #include<QGuiApplication>
 #include<QTime>
 #include "firstpass.h"
-#include "passinterface.h"
 
 
 FirstPass objectFP;
@@ -99,7 +98,7 @@ void Window::delay(float x)
 
 void Window::update()
 {
-
+  objectFP.m_transform.rotate(1.0,0.0,1.0,0.0);
   QOpenGLWindow::update();
 }
 
