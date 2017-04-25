@@ -1,8 +1,11 @@
-#version 410
-
+#version 440
+in fData
+{
+    vec3 normal;
+}frag;
 out vec4 fColor;
 
 void main()
 {
-    fColor = vec4(1.0f, 1.0f, 1.0f, 1.0f);
+    fColor = vec4(frag.normal,1.0f);
 }

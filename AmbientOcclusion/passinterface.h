@@ -13,7 +13,7 @@ class QOpenGLVertexArrayObject;
 
 class PassInterface
 {
-protected:
+public:
     std::vector<QOpenGLVertexArrayObject*> m_VAO;
     ShaderHandler m_shaderHandlerObject;
 public:

@@ -1,8 +1,10 @@
-#include "firstpass.h"
+#include "secondpass.h"
+
 #include <QOpenGLVertexArrayObject>
+#include <cstdlib>
+#include <QVector3D>
 
-
-void FirstPass::setUniforms()
+void SecondPass::setUniforms()
 {
     m_shaderHandlerObject.m_program->bind();
     m_shaderHandlerObject.m_program->setUniformValue(m_transformID,m_transform.toMatrix());
@@ -10,10 +12,13 @@ void FirstPass::setUniforms()
 
 }
 
-void FirstPass::initializations(std::vector<ModelLoader*>& models)
+void SecondPass::initializations(std::vector<ModelLoader*>& models)
 {
 
-    m_shaderHandlerObject.compileShaders(":/shaders/FirstPass.vert",":/shaders/firstpass.geom",":/shaders/FirstPass.frag");
+    //Initialize srand with same seed value every time
+    std::srand(32767);
+
+    m_shaderHandlerObject.compileShaders(":/shaders/secondpass.vert",NULL,":/shaders/secondpass.frag");
 
     m_shaderHandlerObject.m_program->bind();
 
@@ -21,6 +26,38 @@ void FirstPass::initializations(std::vector<ModelLoader*>& models)
 
     m_transformID = m_shaderHandlerObject.m_program->uniformLocation("modelToWorld");
     m_projectionID = m_shaderHandlerObject.m_program->uniformLocation("worldToView");
+
+    m_shaderHandlerObject.m_program->setUniformValue("vertex1Sampler",0);
+    m_shaderHandlerObject.m_program->setUniformValue("vertex2Sampler",1);
+    m_shaderHandlerObject.m_program->setUniformValue("vertex3Sampler",2);
+    m_shaderHandlerObject.m_program->setUniformValue("normalSampler",3);
+
+    m_shaderHandlerObject.m_program->setUniformValue("sampleSize",sampleSize);
+    m_shaderHandlerObject.m_program->setUniformValue("screenWidth",1024);
+    m_shaderHandlerObject.m_program->setUniformValue("screenHeight",1024);
+
+
+    //Generate Sample kernel vectors and set uniforms
+    for(int i=0;i<sampleSize;++i)
+    {
+        float scale = i/sampleSize;
+        QVector3D temp;
+        QString uniformName("fRandom_Vectors[");
+        uniformName+= QString::number(i)+"]";
+
+
+        temp[0] = 2.0*rand() - 1.0;
+        temp[1] = 2.0*rand() - 1.0;
+        temp[2] = 2.0*rand() - 1.0;
+        // Use an acceleration function so more points are
+        // located closer to the origin
+        temp[0] *= (0.1 + (0.9 * scale * scale));
+        temp[1] *= (0.1 + (0.9 * scale * scale));
+        temp[2] *= (0.1 + (0.9 * scale * scale));
+        temp.normalize();
+        m_shaderHandlerObject.m_program->setUniformValue(uniformName.toStdString().c_str(),temp);
+    }
+
 
     for(auto x: models)
     {
@@ -64,12 +101,12 @@ void FirstPass::initializations(std::vector<ModelLoader*>& models)
 
 }
 
-void FirstPass::setObjectData(int indexOfObjectCurrentlyDrawn)
+void SecondPass::setObjectData(int indexOfObjectCurrentlyDrawn)
 {
     m_VAO[indexOfObjectCurrentlyDrawn]->bind();
 }
 
-void FirstPass::releaseProgramAndObjectData()
+void SecondPass::releaseProgramAndObjectData()
 {
     for(auto temp:m_VAO)
     {
@@ -79,3 +116,4 @@ void FirstPass::releaseProgramAndObjectData()
 
 
 }
+

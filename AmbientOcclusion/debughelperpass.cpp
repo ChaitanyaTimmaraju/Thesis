@@ -1,19 +1,17 @@
-#include "firstpass.h"
+#include "debughelperpass.h"
 #include <QOpenGLVertexArrayObject>
 
-
-void FirstPass::setUniforms()
+void DebugHelperPass::setUniforms()
 {
     m_shaderHandlerObject.m_program->bind();
     m_shaderHandlerObject.m_program->setUniformValue(m_transformID,m_transform.toMatrix());
     m_shaderHandlerObject.m_program->setUniformValue(m_projectionID,m_projection);
-
 }
 
-void FirstPass::initializations(std::vector<ModelLoader*>& models)
+void DebugHelperPass::initializations(std::vector<ModelLoader*>& models)
 {
 
-    m_shaderHandlerObject.compileShaders(":/shaders/FirstPass.vert",":/shaders/firstpass.geom",":/shaders/FirstPass.frag");
+    m_shaderHandlerObject.compileShaders(":/shaders/normalshader.vert",":/shaders/normalshader.geom",":/shaders/normalshader.frag");
 
     m_shaderHandlerObject.m_program->bind();
 
@@ -42,10 +40,6 @@ void FirstPass::initializations(std::vector<ModelLoader*>& models)
         m_shaderHandlerObject.m_program->enableAttributeArray(2);
         m_shaderHandlerObject.m_program->setAttributeBuffer(2,GL_FLOAT,0,3,0);
 
-        x->m_uvID.bind();
-        m_shaderHandlerObject.m_program->enableAttributeArray(3);
-        m_shaderHandlerObject.m_program->setAttributeBuffer(3,GL_FLOAT,0,2,0);
-
         //Don't forget to bind indices otherwise model will not draw.
         x->m_indicesID->bind();
 
@@ -59,23 +53,20 @@ void FirstPass::initializations(std::vector<ModelLoader*>& models)
     }
     //release the program
     m_shaderHandlerObject.m_program->release();
-
-
-
 }
 
-void FirstPass::setObjectData(int indexOfObjectCurrentlyDrawn)
+void DebugHelperPass::setObjectData(int indexOfObjectCurrentlyDrawn)
 {
     m_VAO[indexOfObjectCurrentlyDrawn]->bind();
+
 }
 
-void FirstPass::releaseProgramAndObjectData()
+void DebugHelperPass::releaseProgramAndObjectData()
 {
     for(auto temp:m_VAO)
     {
         temp->release();
     }
     m_shaderHandlerObject.m_program->release();
-
 
 }

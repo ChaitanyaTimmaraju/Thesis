@@ -1,13 +1,13 @@
-#ifndef FIRSTPASS_H
-#define FIRSTPASS_H
+#ifndef DEBUGHELPERPASS_H
+#define DEBUGHELPERPASS_H
 
 #include "passinterface.h"
 #include "transform3d.h"
 
-class FirstPass : public PassInterface
+class DebugHelperPass : public PassInterface
 {
 public:
-    FirstPass(){}
+    DebugHelperPass(){}
     virtual void setUniforms();
     virtual void initializations(std::vector<ModelLoader*>&models);
     virtual void setObjectData(int);
@@ -15,7 +15,6 @@ public:
     Transform3D m_transform;
     QMatrix4x4 m_projection;
     int m_transformID,m_projectionID;
-
 };
 
-#endif // FIRSTPASS_H
+#endif // DEBUGHELPERPASS_H

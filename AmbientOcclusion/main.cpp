@@ -16,7 +16,7 @@ int main(int argc, char *argv[])
     //set the window up
     Window window;
     window.setFormat(format);
-    window.resize(QSize(1024,768));
+    window.resize(QSize(1024,1024));
     window.show();
     return a.exec();
 

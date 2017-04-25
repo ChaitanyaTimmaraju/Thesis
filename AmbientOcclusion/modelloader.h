@@ -20,7 +20,6 @@ public:
     QOpenGLBuffer m_vertexID,m_normalID,m_tangentsID,m_uvID;
     QOpenGLBuffer *m_indicesID;
 
-private:
     //object Data
     QVector<QVector3D> vertices,normals,tangents;
     QVector<unsigned int> indices;

@@ -66,7 +66,6 @@ void ModelLoader::loadObjectAndSetBuffers(QString fileName)
 
         //create Index Buffer
         m_indicesID->create();
-
         m_indicesID->bind();
         m_indicesID->setUsagePattern(QOpenGLBuffer::StaticDraw);
         m_indicesID->allocate(indices.constData(),indices.size()*sizeof(unsigned int));
@@ -101,7 +100,8 @@ void ModelLoader::loadObjectAndSetBuffers(QString fileName)
 
 void ModelLoader::draw()
 {
-    glDrawElements(GL_TRIANGLES,indices.size(),GL_UNSIGNED_INT,0);
+   // glDrawElements(GL_TRIANGLES,indices.size(),GL_UNSIGNED_INT,0);
+
 }
 
 ModelLoader::~ModelLoader()

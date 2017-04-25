@@ -17,10 +17,14 @@
         <file>models/tetrahedronVNT.obj</file>
         <file>models/triceratopsVNT.obj</file>
         <file>models/v2VNT.obj</file>
-        <file>shaders/simple.geom</file>
+        <file>shaders/normalshader.geom</file>
         <file>shaders/normalshader.frag</file>
         <file>shaders/normalshader.vert</file>
         <file>shaders/FirstPass.frag</file>
         <file>shaders/FirstPass.vert</file>
+        <file>models/quad.obj</file>
+        <file>shaders/secondpass.frag</file>
+        <file>shaders/secondpass.vert</file>
+        <file>shaders/firstpass.geom</file>
     </qresource>
 </RCC>
