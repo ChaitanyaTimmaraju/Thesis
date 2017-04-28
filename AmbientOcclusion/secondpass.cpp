@@ -65,19 +65,22 @@ void SecondPass::initializations(std::vector<ModelLoader*>& models) {
 
     m_shaderHandlerObject.m_program->enableAttributeArray(0);
     m_shaderHandlerObject.m_program->setAttributeBuffer(0, GL_FLOAT, 0, 3, 0);
+    /*
+        x->m_normalID.bind();
+        m_shaderHandlerObject.m_program->enableAttributeArray(1);
+        m_shaderHandlerObject.m_program->setAttributeBuffer(1, GL_FLOAT, 0, 3,
+       0);
 
-    x->m_normalID.bind();
-    m_shaderHandlerObject.m_program->enableAttributeArray(1);
-    m_shaderHandlerObject.m_program->setAttributeBuffer(1, GL_FLOAT, 0, 3, 0);
+        x->m_tangentsID.bind();
+        m_shaderHandlerObject.m_program->enableAttributeArray(2);
+        m_shaderHandlerObject.m_program->setAttributeBuffer(2, GL_FLOAT, 0, 3,
+       0);
 
-    x->m_tangentsID.bind();
-    m_shaderHandlerObject.m_program->enableAttributeArray(2);
-    m_shaderHandlerObject.m_program->setAttributeBuffer(2, GL_FLOAT, 0, 3, 0);
-
-    x->m_uvID.bind();
-    m_shaderHandlerObject.m_program->enableAttributeArray(3);
-    m_shaderHandlerObject.m_program->setAttributeBuffer(3, GL_FLOAT, 0, 2, 0);
-
+        x->m_uvID.bind();
+        m_shaderHandlerObject.m_program->enableAttributeArray(3);
+        m_shaderHandlerObject.m_program->setAttributeBuffer(3, GL_FLOAT, 0, 2,
+       0);
+      */
     // Don't forget to bind indices otherwise model will not draw.
     x->m_indicesID->bind();
 

@@ -16,6 +16,7 @@ for Qt5 widgets module*/
 #include "transform3d.h"
 
 class ModelLoader;
+class PassInterface;
 class Window : public QOpenGLWindow, protected QOpenGLFunctions_4_4_Core {
   // QT's object
   Q_OBJECT
@@ -30,7 +31,13 @@ class Window : public QOpenGLWindow, protected QOpenGLFunctions_4_4_Core {
   void teardownGL();
   void keyPressEvent(QKeyEvent* e);
   void delay(float f);
-  void createFrameBuffer();
+  void saveTexturesToFiles();
+  void setFrameBuffer();
+  void setTextures();
+  void draw(GLenum mode,
+            PassInterface&,
+            std::vector<ModelLoader*>&,
+            bool clearScreen);
 
   QMap<QString, QString> objectFilePairs;
   Transform3D m_transform;
@@ -38,9 +45,6 @@ class Window : public QOpenGLWindow, protected QOpenGLFunctions_4_4_Core {
   std::vector<ModelLoader*> models;
   std::vector<ModelLoader*> secondPassModels;
 
-  void saveTexturesToFiles();
-  void setFrameBuffer();
-  void setTextures();
   GLenum glCheckError_(QString file, int line);
 
  protected slots:

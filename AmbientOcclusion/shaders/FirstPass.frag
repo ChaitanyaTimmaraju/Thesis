@@ -1,10 +1,9 @@
 #version 440
-#define highp
 in fData
 {
     vec3 point1,point2,point3;
 }frag;
-in highp vec4 interpolatedNormal;;
+in  vec4 interpolatedNormal;;
 
 layout (location=0) out vec4 vertex1;
 layout (location=1) out vec4 vertex2;

@@ -91,10 +91,13 @@ void ModelLoader::loadObjectAndSetBuffers(QString fileName) {
   m_uvID.setUsagePattern(QOpenGLBuffer::StaticDraw);
   m_uvID.allocate(uvs.constData(), uvs.size() * sizeof(QVector2D));
   m_uvID.release();
-}
 
-void ModelLoader::draw() {
-  // glDrawElements(GL_TRIANGLES,indices.size(),GL_UNSIGNED_INT,0);
+  indicesCount = indices.size();
+  vertices.clear();
+  indices.clear();
+  uvs.clear();
+  normals.clear();
+  tangents.clear();
 }
 
 ModelLoader::~ModelLoader() {

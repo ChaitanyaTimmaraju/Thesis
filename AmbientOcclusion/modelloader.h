@@ -7,26 +7,21 @@
 #include <QVector>
 #include <QOpenGLBuffer>
 
-class ModelLoader
-{
+class ModelLoader {
+ public:
+  ModelLoader();
+  ~ModelLoader();
+  ModelLoader(QString fileName);
+  void loadObjectAndSetBuffers(QString fileName);
+  // OpenGL state information
+  QOpenGLBuffer m_vertexID, m_normalID, m_tangentsID, m_uvID;
+  QOpenGLBuffer* m_indicesID;
 
-public:
-    ModelLoader();
-    ~ModelLoader();
-    ModelLoader(QString fileName);
-    void loadObjectAndSetBuffers(QString fileName);
-    void draw();
-    //OpenGL state information
-    QOpenGLBuffer m_vertexID,m_normalID,m_tangentsID,m_uvID;
-    QOpenGLBuffer *m_indicesID;
-
-    //object Data
-    QVector<QVector3D> vertices,normals,tangents;
-    QVector<unsigned int> indices;
-    QVector<QVector2D> uvs;
-
-
-
+  long indicesCount = 0;
+  // object Data
+  QVector<QVector3D> vertices, normals, tangents;
+  QVector<unsigned int> indices;
+  QVector<QVector2D> uvs;
 };
 
-#endif // MODELLOADER_H
+#endif  // MODELLOADER_H

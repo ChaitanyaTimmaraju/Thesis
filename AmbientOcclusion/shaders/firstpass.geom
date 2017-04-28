@@ -1,13 +1,12 @@
 
 #version 440 core
-#define highp
 layout (triangles) in;
 layout (triangle_strip, max_vertices = 3) out;
 
 
 in VS_OUT{
  vec3 eyePosition;
- vec3 highp normalPosition;
+ vec3  normalPosition;
 
 }gs_in[];
 
@@ -16,7 +15,7 @@ out fData
 {
     vec3 point1,point2,point3;
 }frag;
-out highp vec4 interpolatedNormal;
+out  vec4 interpolatedNormal;
 
 
 vec3 GetNormal()

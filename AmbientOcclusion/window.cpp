@@ -10,7 +10,7 @@
 #include <QTime>
 #include <QOpenGLExtraFunctions>
 
-#define DEBUG_ON 0
+#define DEBUG_ON 1
 #define FIRSTPASS 1
 #define SECONDPASS 1
 #define glCheckError() glCheckError_(__FILE__, __LINE__)
@@ -25,12 +25,10 @@ void Window::setFrameBuffer() {
       QOpenGLFramebufferObject::Attachment::CombinedDepthStencil);
   format.setTextureTarget(GL_TEXTURE_2D);
   format.setInternalTextureFormat(GL_RGBA16F);
-  format.setMipmap(true);
   fbo = new QOpenGLFramebufferObject(width(), height(), format);
   if (fbo->isValid()) {
     qDebug() << "Framebuffer Created";
   }
-
   fbo->addColorAttachment(width(), height());
   fbo->addColorAttachment(width(), height());
   fbo->addColorAttachment(width(), height());
@@ -43,16 +41,20 @@ void Window::setFrameBuffer() {
                     GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3};
   f->glDrawBuffers(4, bufs);
   fbo->release();
+  // Need to set textures only once after creating the FBO.
+  setTextures();
 }
 
 void Window::setTextures() {
-  glBindBuffer(GL_FRAMEBUFFER, 0);
+  glBindFramebuffer(GL_FRAMEBUFFER, 0);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+  // get all texture ID's for binding them
+  QVector<GLuint> textureID = fbo->textures();
   for (int i = 0; i < 4; ++i) {
     glActiveTexture(GL_TEXTURE0 + i);
-    glBindTexture(GL_TEXTURE_2D, fbo->takeTexture(i));
-    glCheckError();
+    glBindTexture(GL_TEXTURE_2D, textureID[i]);
   }
+  glCheckError();
 }
 
 void Window::saveTexturesToFiles() {
@@ -82,68 +84,45 @@ void Window::initializeGL() {
   for (auto x : objs)
     models.push_back(new ModelLoader(objectFilePairs[x]));
 
-  secondPassModels.push_back(new ModelLoader(objectFilePairs["dragon"]));
+  // secondPassModels.push_back(new ModelLoader(objectFilePairs["dragon"]));
 
-  // First pass
   // create FrameBuffer
   setFrameBuffer();
+  // First pass
   objectFP.initializations(models);
   // Debug pass
   objectDP.initializations(models);
   // Second pass
-  objectSP.initializations(secondPassModels);
+  objectSP.initializations(models);
   // setting the object to world matrix
   objectFP.m_transform = objectDP.m_transform = objectSP.m_transform =
       m_transform;
 }
 
 void Window::paintGL() {
-  // First Pass
   if (FIRSTPASS) {
-    objectFP.setUniforms();
     fbo->bind();
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    for (int modelIndex = 0; modelIndex < models.size(); ++modelIndex) {
-      objectFP.setObjectData(modelIndex);
-      glDrawElements(GL_TRIANGLES, models[modelIndex]->indices.size(),
-                     GL_UNSIGNED_INT, 0);
-    }
-    objectFP.releaseProgramAndObjectData();
+    draw(GL_TRIANGLES, objectFP, models, true);
     fbo->release();
   }
+
   // saveTexturesToFiles();
-  setTextures();
 
   if (SECONDPASS) {
-    // Second Pass
-    objectSP.setUniforms();
-    for (int modelIndex = 0; modelIndex < secondPassModels.size();
-         ++modelIndex) {
-      objectSP.setObjectData(modelIndex);
-      glDrawElements(GL_TRIANGLES, secondPassModels[modelIndex]->indices.size(),
-                     GL_UNSIGNED_INT, 0);
-    }
-    objectSP.releaseProgramAndObjectData();
+    draw(GL_TRIANGLES, objectSP, models, true);
   }
 
   if (DEBUG_ON) {
     // Debug Pass For Normals
-    objectDP.setUniforms();
-    for (int modelIndex = 0; modelIndex < models.size(); ++modelIndex) {
-      objectDP.setObjectData(modelIndex);
-      glDrawElements(GL_TRIANGLES, models[modelIndex]->indices.size(),
-                     GL_UNSIGNED_INT, 0);
-    }
-    objectDP.releaseProgramAndObjectData();
+    draw(GL_POINTS, objectDP, models, false);
   }
 }
 
 void Window::update() {
-  // objectFP.m_transform.rotate(0.5, 0.0, 1.0, 0.0);
-  // objectDP.m_transform.rotate(0.5, 0.0, 1.0, 0.0);
-  // objectSP.m_transform.rotate(0.5, 0.0, 1.0, 0.0);
-
-  // QOpenGLWindow::update();
+  objectFP.m_transform.rotate(0.5, 0.0, 1.0, 0.0);
+  objectDP.m_transform.rotate(0.5, 0.0, 1.0, 0.0);
+  objectSP.m_transform.rotate(0.5, 0.0, 1.0, 0.0);
+  QOpenGLWindow::update();
 }
 
 void Window::resizeGL(int width, int height) {
@@ -151,6 +130,25 @@ void Window::resizeGL(int width, int height) {
   m_projection.perspective(45.0f, (double)(width) / (double)height, 0.1, 10);
   objectFP.m_projection = objectDP.m_projection = objectSP.m_projection =
       m_projection;
+}
+
+void Window::draw(GLenum mode,
+                  PassInterface& passObject,
+                  std::vector<ModelLoader*>& modelsList,
+                  bool clearScreen) {
+  /* Generic draw command which takes pass interface object and
+   * all the models as reference and draws it.
+  */
+  passObject.setUniforms();
+  if (clearScreen)
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+  for (int modelIndex = 0; modelIndex < modelsList.size(); ++modelIndex) {
+    passObject.setObjectData(modelIndex);
+    glDrawElements(mode, modelsList[modelIndex]->indicesCount, GL_UNSIGNED_INT,
+                   0);
+  }
+  passObject.releaseProgramAndObjectData();
 }
 
 GLenum Window::glCheckError_(QString file, int line) {

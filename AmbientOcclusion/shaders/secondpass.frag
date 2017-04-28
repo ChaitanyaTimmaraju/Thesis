@@ -1,21 +1,21 @@
 #version 440
 #define highp
+
+in vec3 f_eyeSpacePositions;
+out vec4 color;
+
 const bool DEBUG = true;
+const int sampleSize=25;
+
 uniform sampler2D vertex1Sampler;
 uniform sampler2D vertex2Sampler;
 uniform sampler2D vertex3Sampler;
 uniform sampler2D normalSampler;
-
-const int sampleSize=25;
 uniform int screenWidth;
 uniform int screenHeight;
 uniform vec3 fRandom_Vectors[sampleSize];
 uniform mat4 worldToView;
 
-in vec2 f_UVS ;
-in vec3 f_eyeSpacePositions;
-in vec3 f_normal;
-out vec4 color;
 
 bool rayTriangleIntersection(vec3 rayDirection,vec2 texCoordsOfTriangle)
 {
