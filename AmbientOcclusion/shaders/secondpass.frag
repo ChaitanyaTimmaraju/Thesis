@@ -1,4 +1,5 @@
 #version 440
+#define highp
 const bool DEBUG = true;
 uniform sampler2D vertex1Sampler;
 uniform sampler2D vertex2Sampler;
@@ -16,27 +17,6 @@ in vec3 f_eyeSpacePositions;
 in vec3 f_normal;
 out vec4 color;
 
-
-void debug()
-{
-    vec2 textureCoords;
-    textureCoords.x = gl_FragCoord.x/screenWidth;
-    textureCoords.y = gl_FragCoord.y/screenHeight;
-
-
-    //For finding normal
-    vec3 vertex1 = texture(vertex1Sampler,textureCoords).xyz;
-    vec3 vertex2 = texture(vertex2Sampler,textureCoords).xyz;
-    vec3 vertex3 = texture(vertex3Sampler,textureCoords).xyz;
-    vertex1 = vertex1*2.0 -1.0;
-    vertex2 = vertex2*2.0 -1.0;
-    vertex3 = vertex3*2.0 -1.0;
-    color.xyz = normalize(cross(vertex2-vertex1,vertex3-vertex1));
-    color.w = 1.0;
-
-}
-
-
 bool rayTriangleIntersection(vec3 rayDirection,vec2 texCoordsOfTriangle)
 {
     //Specifying vertices in counter clock-wise direction
@@ -48,16 +28,41 @@ bool rayTriangleIntersection(vec3 rayDirection,vec2 texCoordsOfTriangle)
     vertex3 = vertex3*2.0 -1.0;
 
     //inside-out test
-    vec3 normal = normalize(cross(vertex2-vertex1,vertex3-vertex1));
+    vec3 normal = texture(normalSampler,texCoordsOfTriangle).xyz;
     float point1 = dot(normalize(cross(vertex2-vertex1,rayDirection-vertex1)),normal);
     float point2 = dot(normalize(cross(vertex3-vertex2,rayDirection-vertex2)),normal);
     float point3 = dot(normalize(cross(vertex1-vertex3,rayDirection-vertex3)),normal);
 
-    if(point1<0.0||point2<0.0||point3<0.0)
+    if(point1<-1.0||point2<-1.0||point3<-1.0)
         return false;
 
     return true;
 }
+
+
+void debug()
+{
+    vec2 textureCoords;
+   // textureCoords.x = gl_FragCoord.x/screenWidth;
+  // textureCoords.y = gl_FragCoord.y/screenHeight;
+   vec4 samplePosition = worldToView *vec4( f_eyeSpacePositions,1.0);
+   textureCoords = samplePosition.xy/samplePosition.w;
+   textureCoords = (textureCoords + 1.0)/2.0;
+    //For finding normal
+    vec3 vertex1 = texture(vertex1Sampler,textureCoords).xyz*2.0-1.0;
+    vec3 vertex2 = texture(vertex2Sampler,textureCoords).xyz*2.0-1.0;
+    vec3 vertex3 = texture(vertex3Sampler,textureCoords).xyz*2.0-1.0;
+
+    if(rayTriangleIntersection(f_eyeSpacePositions.xyz,textureCoords))
+          color.xyz = texture(normalSampler,textureCoords).xyz;
+    else
+        color.xyz = vec3(0.4,0.2,0.3);
+    color.w = 1.0;
+
+
+}
+
+
 
 
 
@@ -69,6 +74,7 @@ void main(void)
     {
 
         debug();
+
 
     }else
     {

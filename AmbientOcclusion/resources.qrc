@@ -26,5 +26,6 @@
         <file>shaders/secondpass.frag</file>
         <file>shaders/secondpass.vert</file>
         <file>shaders/firstpass.geom</file>
+        <file>models/Altair.obj</file>
     </qresource>
 </RCC>

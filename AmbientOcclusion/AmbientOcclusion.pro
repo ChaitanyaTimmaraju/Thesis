@@ -16,7 +16,8 @@ SOURCES += main.cpp \
     shaderhandler.cpp \
     firstpass.cpp \
     debughelperpass.cpp \
-    secondpass.cpp
+    secondpass.cpp \
+    model.cpp
 
 HEADERS += \
     window.h \
@@ -28,15 +29,16 @@ HEADERS += \
     passinterface.h \
     firstpass.h \
     debughelperpass.h \
-    secondpass.h
+    secondpass.h \
+    model.h
 
 RESOURCES += \
     resources.qrc
 
 DISTFILES += \
     models/cowVNT.obj \
-    shaders/simple.geom \
     shaders/normalshader.vert \
+    shaders/normalshader.geom \
     shaders/normalshader.frag \
     shaders/FirstPass.vert \
     shaders/FirstPass.frag \

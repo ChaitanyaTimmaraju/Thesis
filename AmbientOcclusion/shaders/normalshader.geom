@@ -1,8 +1,10 @@
 
 #version 440 core
-layout (points) in;
+/*layout (points) in;
 layout (line_strip, max_vertices = 6) out;
-
+*/
+layout (triangles) in;
+layout (triangle_strip, max_vertices = 3) out;
 in VS_OUT {
     vec3 normal;
     vec3 tangent;
@@ -13,7 +15,7 @@ out fData
     vec3 normal;
 }frag;
 
-const float MAGNITUDE = 0.1f;
+const float MAGNITUDE = 0.6f;
 
 void GenerateLine(int index,vec3 col)
 {
@@ -33,7 +35,7 @@ void main()
     GenerateLine(1,vec3(1.0)); // Second vertex normal
     GenerateLine(2,vec3(1.0)); // Third vertex normal
     */
-
+    /*
 
     gl_Position = gl_in[0].gl_Position;
     frag.normal = vec3(0.0,0.0,1.0);
@@ -57,5 +59,14 @@ void main()
     gl_Position = gl_in[0].gl_Position + vec4(cross(gs_in[0].normal,gs_in[0].tangent), 0.0f) * MAGNITUDE;
     frag.normal = vec3(0.0,1.0,0.0);
     EmitVertex();
+    EndPrimitive();
+    */
+
+    for(int i=0;i<3;++i)
+    {
+         gl_Position = gl_in[i].gl_Position;
+         frag.normal = gs_in[i].normal;
+         EmitVertex();
+    }
     EndPrimitive();
 }

@@ -16,5 +16,6 @@ void main()
   gl_Position =worldToView*eyeSpacePositions;
   f_UVS = texCoords;
   f_eyeSpacePositions = eyeSpacePositions.xyz;
-  f_normal = (inverse(transpose(modelToWorld))*vec4(normal,0.0)).xyz;
+  f_normal =normalize((inverse(transpose(modelToWorld))*vec4(normal,0.0)).xyz);
+
 }
