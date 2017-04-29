@@ -4,13 +4,9 @@ in vec3 f_eyeSpacePositions;
 out vec4 color;
 
 const int sampleSize=25;
-const float EPSILON = -0.0;
+uniform float EPSILON;
 uniform int textureToDisplay;
 uniform sampler2D firstPassSamplers[4];
-uniform sampler2D vertex1Sampler;
-uniform sampler2D vertex2Sampler;
-uniform sampler2D vertex3Sampler;
-uniform sampler2D normalSampler;
 uniform int screenWidth;
 uniform int screenHeight;
 uniform vec3 fRandom_Vectors[sampleSize];
@@ -36,7 +32,6 @@ bool rayTriangleIntersection(vec3 rayDirection,vec2 texCoordsOfTriangle)
     return true;
 }
 
-
 void debug()
 {
      vec2 textureCoords;
@@ -59,12 +54,6 @@ void debug()
 
 }
 
-
-
-
-
-
-
 void main(void)
 {
     if(textureToDisplay<5)
@@ -84,7 +73,7 @@ void main(void)
             //for(float stepSize=1.0; stepSize<MAX_STEP_SIZE; stepSize++)
             //{
                 //project them to find the texture coords
-                randomVectorDirection.xyz = f_eyeSpacePositions.xyz+(fRandom_Vectors[currentSample]);
+                randomVectorDirection.xyz = f_eyeSpacePositions.xyz;
                 vec4 samplePosition = worldToView * randomVectorDirection;
                 textureCoords = samplePosition.xy/samplePosition.w;
                 textureCoords = (textureCoords + 1.0)/2.0;

@@ -28,6 +28,7 @@ class Window : public QOpenGLWindow, protected QOpenGLFunctions_4_4_Core {
   ~Window();
   void initializeGL();
   Q_INVOKABLE void clicked(int temp);
+  Q_INVOKABLE void epsilonValue(float temp);
 
   void resizeGL(int width, int height);
   void paintGL();

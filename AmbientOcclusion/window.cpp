@@ -14,7 +14,7 @@
 static bool DEBUG_ON = false;
 static bool FIRSTPASS = true;
 static bool SECONDPASS = true;
-static bool ANIMATE = true;
+static bool ANIMATE = false;
 static float rotationSpeed = 1.0;
 
 static DebugHelperPass objectDP;
@@ -153,6 +153,12 @@ void Window::draw(GLenum mode,
   }
   passObject.releaseProgramAndObjectData();
 }
+void Window::epsilonValue(float temp) {
+  objectSP.m_shaderHandlerObject.m_program->bind();
+  objectSP.m_shaderHandlerObject.m_program->setUniformValue("EPSILON", temp);
+  objectSP.m_shaderHandlerObject.m_program->release();
+}
+
 void Window::clicked(int temp) {
   switch (temp) {
     case 0:
