@@ -3,7 +3,6 @@
 in vec3 f_eyeSpacePositions;
 out vec4 color;
 
-const bool DEBUG = true;
 const int sampleSize=25;
 const float EPSILON = -0.0;
 uniform int textureToDisplay;
@@ -68,12 +67,9 @@ void debug()
 
 void main(void)
 {
-    if(DEBUG)
+    if(textureToDisplay<5)
     {
-
         debug();
-
-
     }else
     {
         vec4 randomVectorDirection;

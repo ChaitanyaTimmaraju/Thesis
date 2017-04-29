@@ -109,8 +109,6 @@ void Window::paintGL() {
     fbo->release();
   }
 
-  //  saveTexturesToFiles();
-
   if (SECONDPASS) {
     draw(GL_TRIANGLES, objectSP, models, true);
   }
@@ -162,15 +160,16 @@ void Window::clicked(int temp) {
     case 2:
     case 3:
     case 4:
+    case 5:
       objectSP.m_shaderHandlerObject.m_program->bind();
       objectSP.m_shaderHandlerObject.m_program->setUniformValue(
           "textureToDisplay", temp);
       objectSP.m_shaderHandlerObject.m_program->release();
       break;
-    case 5:
+    case 6:
       ANIMATE = !ANIMATE;
       break;
-    case 6:
+    case 7:
       DEBUG_ON = !DEBUG_ON;
       break;
   }
