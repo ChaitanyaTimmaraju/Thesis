@@ -27,5 +27,6 @@
         <file>shaders/secondpass.vert</file>
         <file>shaders/firstpass.geom</file>
         <file>models/Altair.obj</file>
+        <file>mainUI.qml</file>
     </qresource>
 </RCC>

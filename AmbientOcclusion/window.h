@@ -9,6 +9,7 @@ for Qt5 widgets module*/
 #include <QMatrix4x4>
 #include <QKeyEvent>
 #include <QMap>
+#include <QWindow>
 #include <QString>
 #include <QOpenGLVertexArrayObject>
 #include <QOpenGLFramebufferObject>
@@ -26,6 +27,8 @@ class Window : public QOpenGLWindow, protected QOpenGLFunctions_4_4_Core {
   Window();
   ~Window();
   void initializeGL();
+  Q_INVOKABLE void clicked(int temp);
+
   void resizeGL(int width, int height);
   void paintGL();
   void teardownGL();
@@ -44,7 +47,6 @@ class Window : public QOpenGLWindow, protected QOpenGLFunctions_4_4_Core {
   QMatrix4x4 m_projection;
   std::vector<ModelLoader*> models;
   std::vector<ModelLoader*> secondPassModels;
-
   GLenum glCheckError_(QString file, int line);
 
  protected slots:

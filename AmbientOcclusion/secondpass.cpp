@@ -26,10 +26,10 @@ void SecondPass::initializations(std::vector<ModelLoader*>& models) {
   m_projectionID =
       m_shaderHandlerObject.m_program->uniformLocation("worldToView");
 
-  m_shaderHandlerObject.m_program->setUniformValue("vertex1Sampler", 0);
-  m_shaderHandlerObject.m_program->setUniformValue("vertex2Sampler", 1);
-  m_shaderHandlerObject.m_program->setUniformValue("vertex3Sampler", 2);
-  m_shaderHandlerObject.m_program->setUniformValue("normalSampler", 3);
+  m_shaderHandlerObject.m_program->setUniformValue("firstPassSamplers[0]", 0);
+  m_shaderHandlerObject.m_program->setUniformValue("firstPassSamplers[1]", 1);
+  m_shaderHandlerObject.m_program->setUniformValue("firstPassSamplers[2]", 2);
+  m_shaderHandlerObject.m_program->setUniformValue("firstPassSamplers[3]", 3);
 
   m_shaderHandlerObject.m_program->setUniformValue("sampleSize", sampleSize);
   m_shaderHandlerObject.m_program->setUniformValue("screenWidth", 1024);
@@ -51,6 +51,8 @@ void SecondPass::initializations(std::vector<ModelLoader*>& models) {
     temp[1] *= (0.1 + (0.9 * scale * scale));
     temp[2] *= (0.1 + (0.9 * scale * scale));
     temp.normalize();
+    // qDebug() << qPrintable("fRandomVectors[" + QString::number(i) +
+    // "]=vec3(")<< temp[0] << "," << temp[1] << "," << temp[2] << ");";
     m_shaderHandlerObject.m_program->setUniformValue(
         uniformName.toStdString().c_str(), temp);
   }

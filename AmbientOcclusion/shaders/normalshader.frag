@@ -1,4 +1,5 @@
 #version 440
+
 in fData
 {
     vec3 normal;

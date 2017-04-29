@@ -9,11 +9,13 @@
 #include <QString>
 #include <QTime>
 #include <QOpenGLExtraFunctions>
-
-#define DEBUG_ON 1
-#define FIRSTPASS 1
-#define SECONDPASS 1
 #define glCheckError() glCheckError_(__FILE__, __LINE__)
+
+static bool DEBUG_ON = false;
+static bool FIRSTPASS = true;
+static bool SECONDPASS = true;
+static bool ANIMATE = true;
+static float rotationSpeed = 1.0;
 
 static DebugHelperPass objectDP;
 static FirstPass objectFP;
@@ -24,7 +26,8 @@ void Window::setFrameBuffer() {
   format.setAttachment(
       QOpenGLFramebufferObject::Attachment::CombinedDepthStencil);
   format.setTextureTarget(GL_TEXTURE_2D);
-  format.setInternalTextureFormat(GL_RGBA16F);
+  format.setInternalTextureFormat(GL_RGBA32F_ARB);
+  format.setMipmap(true);
   fbo = new QOpenGLFramebufferObject(width(), height(), format);
   if (fbo->isValid()) {
     qDebug() << "Framebuffer Created";
@@ -76,9 +79,9 @@ void Window::initializeGL() {
   glCullFace(GL_BACK);
 
   // Load all models required
-  const QString objs[] = {"dragon"};
-  m_transform.scale(0.7, 0.7, 0.7);
-  m_transform.rotate(-90.0f, 1.0, 0.0, 0.0);
+  const QString objs[] = {"cow"};
+  // m_transform.scale(0.7, 0.7, 0.7);
+  // m_transform.rotate(-90.0f, 1.0, 0.0, 0.0);
   m_transform.translate(0.0, 0.0, -2.0);
 
   for (auto x : objs)
@@ -106,7 +109,7 @@ void Window::paintGL() {
     fbo->release();
   }
 
-  // saveTexturesToFiles();
+  //  saveTexturesToFiles();
 
   if (SECONDPASS) {
     draw(GL_TRIANGLES, objectSP, models, true);
@@ -119,9 +122,11 @@ void Window::paintGL() {
 }
 
 void Window::update() {
-  objectFP.m_transform.rotate(0.5, 0.0, 1.0, 0.0);
-  objectDP.m_transform.rotate(0.5, 0.0, 1.0, 0.0);
-  objectSP.m_transform.rotate(0.5, 0.0, 1.0, 0.0);
+  if (ANIMATE) {
+    objectFP.m_transform.rotate(rotationSpeed, 0.0, 1.0, 0.0);
+    objectDP.m_transform.rotate(rotationSpeed, 0.0, 1.0, 0.0);
+    objectSP.m_transform.rotate(rotationSpeed, 0.0, 1.0, 0.0);
+  }
   QOpenGLWindow::update();
 }
 
@@ -150,7 +155,26 @@ void Window::draw(GLenum mode,
   }
   passObject.releaseProgramAndObjectData();
 }
-
+void Window::clicked(int temp) {
+  switch (temp) {
+    case 0:
+    case 1:
+    case 2:
+    case 3:
+    case 4:
+      objectSP.m_shaderHandlerObject.m_program->bind();
+      objectSP.m_shaderHandlerObject.m_program->setUniformValue(
+          "textureToDisplay", temp);
+      objectSP.m_shaderHandlerObject.m_program->release();
+      break;
+    case 5:
+      ANIMATE = !ANIMATE;
+      break;
+    case 6:
+      DEBUG_ON = !DEBUG_ON;
+      break;
+  }
+}
 GLenum Window::glCheckError_(QString file, int line) {
   GLenum errorCode;
   while ((errorCode = glGetError()) != GL_NO_ERROR) {
