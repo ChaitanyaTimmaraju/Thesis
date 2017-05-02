@@ -30,7 +30,7 @@ void SecondPass::initializations(std::vector<ModelLoader*>& models) {
   m_shaderHandlerObject.m_program->setUniformValue("firstPassSamplers[1]", 1);
   m_shaderHandlerObject.m_program->setUniformValue("firstPassSamplers[2]", 2);
   m_shaderHandlerObject.m_program->setUniformValue("firstPassSamplers[3]", 3);
-  m_shaderHandlerObject.m_program->setUniformValue("displayOption", 8);
+  m_shaderHandlerObject.m_program->setUniformValue("displayOption", 4);
   m_shaderHandlerObject.m_program->setUniformValue("EPSILON", -0.0f);
 
   m_shaderHandlerObject.m_program->setUniformValue("sampleSize", sampleSize);
