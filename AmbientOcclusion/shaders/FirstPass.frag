@@ -2,6 +2,7 @@
 
 in fData
 {
+    //These are eye-space positions which are passed through geometry shader.
     vec3 point1,point2,point3;
 }frag;
 in  vec4 interpolatedNormal;;

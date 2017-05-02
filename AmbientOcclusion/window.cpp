@@ -167,9 +167,10 @@ void Window::clicked(int temp) {
     case 3:
     case 4:
     case 5:
+    case 8:
       objectSP.m_shaderHandlerObject.m_program->bind();
-      objectSP.m_shaderHandlerObject.m_program->setUniformValue(
-          "textureToDisplay", temp);
+      objectSP.m_shaderHandlerObject.m_program->setUniformValue("displayOption",
+                                                                temp);
       objectSP.m_shaderHandlerObject.m_program->release();
       break;
     case 6:

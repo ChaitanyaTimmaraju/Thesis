@@ -7,13 +7,13 @@ uniform mat4 worldToView;
 
 out VS_OUT {
     vec3 eyePosition;
-    vec3  normalPosition;
+    vec3  normalVector;
 }vs_out;
 
 void main()
 {
-  vec4 temp =modelToWorld*vec4(position, 1.0);
-  gl_Position =worldToView*temp;
-  vs_out.normalPosition = normalize((inverse(transpose(modelToWorld))*vec4(normal,0.0)).xyz);
-  vs_out.eyePosition = temp.xyz;
+  vec4 eyeSpacePosition =modelToWorld*vec4(position, 1.0);
+  gl_Position =worldToView*eyeSpacePosition;
+  vs_out.normalVector = ((transpose(inverse(modelToWorld))*vec4(normal,0.0)).xyz);
+  vs_out.eyePosition = eyeSpacePosition.xyz;
 }

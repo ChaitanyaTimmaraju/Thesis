@@ -3,7 +3,6 @@ import QtQuick.Controls 1.1
 import com.window.launcher 1.0
 Column {
     spacing: 2
-
     Launcher
     {
          id:launcher
@@ -14,16 +13,24 @@ Column {
                         "Render Point3 Texture",
                         "Render Normal Texture",
                         "Calculate Normals From Textures",
-                        "Show AO output",
+                        "Ray-Tri intersection with current point
+    (White=hit,Black=miss)",
                         "Toogle Rotation",
                          "Show Normals as vectors",
+                        "Sho AO output",
         ]
+
+
+
+
         Button {
             width: 300
             height: 32
             text: modelData + ' (' + index + ')'
             onClicked: launcher.clicked(index)
+
         }
+
     }
     Text {
         width:300
@@ -31,9 +38,9 @@ Column {
         Slider{
                 y:15
                 id: epsilon
-                minimumValue: -2.0
-                maximumValue: 2.0
-                stepSize: 0.1
+                minimumValue: -0.1
+                maximumValue: 0.1
+                stepSize: 0.01
                 tickmarksEnabled: true
                 width:300
                 height:32
