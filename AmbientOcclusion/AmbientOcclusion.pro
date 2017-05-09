@@ -17,7 +17,8 @@ SOURCES += main.cpp \
     firstpass.cpp \
     debughelperpass.cpp \
     secondpass.cpp \
-    model.cpp
+    model.cpp \
+    lineshader.cpp
 
 HEADERS += \
     window.h \
@@ -30,7 +31,8 @@ HEADERS += \
     firstpass.h \
     debughelperpass.h \
     secondpass.h \
-    model.h
+    model.h \
+    lineshader.h
 
 RESOURCES += \
     resources.qrc
@@ -44,4 +46,6 @@ DISTFILES += \
     shaders/FirstPass.frag \
     shaders/secondpass.vert \
     shaders/secondpass.frag \
-    shaders/firstpass.geom
+    shaders/firstpass.geom \
+    shaders/lineshader.vert \
+    shaders/lineshader.frag

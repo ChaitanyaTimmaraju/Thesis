@@ -28,5 +28,7 @@
         <file>shaders/firstpass.geom</file>
         <file>models/Altair.obj</file>
         <file>mainUI.qml</file>
+        <file>shaders/lineshader.frag</file>
+        <file>shaders/lineshader.vert</file>
     </qresource>
 </RCC>

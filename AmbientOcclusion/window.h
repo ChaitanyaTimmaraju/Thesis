@@ -8,6 +8,7 @@ for Qt5 widgets module*/
 #include <QOpenGLFunctions_4_4_Core>
 #include <QMatrix4x4>
 #include <QKeyEvent>
+#include <QMouseEvent>
 #include <QMap>
 #include <QWindow>
 #include <QString>
@@ -34,6 +35,7 @@ class Window : public QOpenGLWindow, protected QOpenGLFunctions_4_4_Core {
   void paintGL();
   void teardownGL();
   void keyPressEvent(QKeyEvent* e);
+  void mousePressEvent(QMouseEvent* event);
   void delay(float f);
   void saveTexturesToFiles();
   void setFrameBuffer();

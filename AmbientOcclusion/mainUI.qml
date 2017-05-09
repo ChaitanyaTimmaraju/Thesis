@@ -14,7 +14,7 @@ Column {
                         "Render Normal Texture",
                         "Calculate Normals From Textures",
                         "Ray-Tri intersection with current point
-    (White=hit,Black=miss)",
+    (White=hit,Green=miss)",
                         "Toogle Rotation",
                          "Show Normals as vectors",
                         "Sho AO output",
@@ -38,9 +38,9 @@ Column {
         Slider{
                 y:15
                 id: epsilon
-                minimumValue: -0.1
-                maximumValue: 0.1
-                stepSize: 0.01
+                minimumValue: -0.0001
+                maximumValue: 0.0
+                stepSize: 0.00001
                 tickmarksEnabled: true
                 width:300
                 height:32

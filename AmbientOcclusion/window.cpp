@@ -3,6 +3,7 @@
 #include "firstpass.h"
 #include "passinterface.h"
 #include "secondpass.h"
+#include "lineshader.h"
 #include <QDebug>
 #include <QGuiApplication>
 #include <QSize>
@@ -20,22 +21,22 @@ static float rotationSpeed = 1.0;
 static DebugHelperPass objectDP;
 static FirstPass objectFP;
 static SecondPass objectSP;
+static LineShader objectLP;
 
 void Window::setFrameBuffer() {
   QOpenGLFramebufferObjectFormat format;
   format.setAttachment(
       QOpenGLFramebufferObject::Attachment::CombinedDepthStencil);
   format.setTextureTarget(GL_TEXTURE_2D);
-  format.setInternalTextureFormat(GL_RGBA32F_ARB);
-  format.setMipmap(true);
+  format.setInternalTextureFormat(GL_RGBA32F);
   fbo = new QOpenGLFramebufferObject(width(), height(), format);
   if (fbo->isValid()) {
     qDebug() << "Framebuffer Created";
   }
-  fbo->addColorAttachment(width(), height());
-  fbo->addColorAttachment(width(), height());
-  fbo->addColorAttachment(width(), height());
-  fbo->addColorAttachment(width(), height());
+  fbo->addColorAttachment(width(), height(), GL_RGBA32F);
+  fbo->addColorAttachment(width(), height(), GL_RGBA32F);
+  fbo->addColorAttachment(width(), height(), GL_RGBA32F);
+  fbo->addColorAttachment(width(), height(), GL_RGBA32F);
   fbo->bind();
 
   // Clear buffers.
@@ -63,8 +64,10 @@ void Window::setTextures() {
 void Window::saveTexturesToFiles() {
   for (int i = 0; i < 4; ++i) {
     QImage temp = fbo->toImage(true, i);
-    // Note: Please use file extension otherwise it will not create
-    temp.save("pics/file" + QString::number(i) + ".png");
+    // Note: Please use a file extension otherwise it will not create
+    // temp.save("pics/file" + QString::number(i) + ".png");
+    if (temp.save("pics/file" + QString::number(i) + ".png", "PNG", 100))
+      qDebug() << "Images created";
   }
 }
 
@@ -77,7 +80,6 @@ void Window::initializeGL() {
   glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
   glEnable(GL_DEPTH_TEST);
   glCullFace(GL_BACK);
-
   // Load all models required
   const QString objs[] = {"cow"};
   // m_transform.scale(0.7, 0.7, 0.7);
@@ -97,6 +99,10 @@ void Window::initializeGL() {
   objectDP.initializations(models);
   // Second pass
   objectSP.initializations(models);
+
+  objectLP.initializations(models);
+  glCheckError();
+
   // setting the object to world matrix
   objectFP.m_transform = objectDP.m_transform = objectSP.m_transform =
       m_transform;
@@ -108,7 +114,6 @@ void Window::paintGL() {
     draw(GL_TRIANGLES, objectFP, models, true);
     fbo->release();
   }
-
   if (SECONDPASS) {
     draw(GL_TRIANGLES, objectSP, models, true);
   }
@@ -116,6 +121,12 @@ void Window::paintGL() {
   if (DEBUG_ON) {
     // Debug Pass For Normals
     draw(GL_POINTS, objectDP, models, false);
+  }
+  // For drawing traced ray from eye to mouse clicked position.
+  {
+    objectLP.setUniforms();
+    glDrawArrays(GL_LINES, 0, 2);
+    objectLP.releaseProgramAndObjectData();
   }
 }
 
@@ -132,7 +143,7 @@ void Window::resizeGL(int width, int height) {
   m_projection.setToIdentity();
   m_projection.perspective(45.0f, (double)(width) / (double)height, 0.1, 10);
   objectFP.m_projection = objectDP.m_projection = objectSP.m_projection =
-      m_projection;
+      objectLP.m_projection = m_projection;
 }
 
 void Window::draw(GLenum mode,
@@ -268,9 +279,28 @@ void Window::printContextInformation() {
   qDebug() << qPrintable(glType) << qPrintable(glVersion) << "("
            << qPrintable(glProfile) << ")";
 }
+void Window::mousePressEvent(QMouseEvent* event) {
+  QVector3D mouseClickPosition(event->x(), event->y(), 1);
+  mouseClickPosition[0] = (mouseClickPosition[0] + 0.5) / width();
+  mouseClickPosition[1] = (mouseClickPosition[1] + 0.5) / height();
+  mouseClickPosition[0] = (mouseClickPosition[0] * 2.0) - 1.0;
+  mouseClickPosition[1] = 1.0 - (mouseClickPosition[1] * 2.0);
+  // mouseClickPosition[1] = 1.0 - mouseClickPosition[1];
+  objectSP.m_shaderHandlerObject.m_program->bind();
+  objectSP.m_shaderHandlerObject.m_program->setUniformValue("mouseClickRay",
+                                                            mouseClickPosition);
+
+  objectSP.m_shaderHandlerObject.m_program->release();
+  objectLP.vertices[1][0] = mouseClickPosition[0];
+  objectLP.vertices[1][1] = mouseClickPosition[1];
+  objectLP.setVertices();
+  qDebug() << event->x() << event->y();
+  qDebug() << mouseClickPosition[0] << mouseClickPosition[1];
+}
 
 void Window::keyPressEvent(QKeyEvent* e) {
   char c = e->text().toStdString()[0];
+  qDebug() << c;
 }
 void Window::delay(float x) {
   QTime dieTime = QTime::currentTime().addMSecs(x);

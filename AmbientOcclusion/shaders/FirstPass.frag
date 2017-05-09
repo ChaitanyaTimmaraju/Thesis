@@ -1,4 +1,4 @@
-#version 440
+#version 440 core
 
 in fData
 {
@@ -14,16 +14,8 @@ layout (location=3) out vec4 normal;
 
 void main()
 {
-
-
-    vec3 temp = frag.point1;
-   vertex1 = vec4(float(temp.x),float(temp.y),float(temp.z),1.0);
-
-   temp = (frag.point1)-(frag.point2);
-   vertex2 = vec4(float(temp.x),float(temp.y),float(temp.z),1.0);
-
-   temp = (frag.point1)-(frag.point3);
-   vertex3 = vec4(float(temp.x),float(temp.y),float(temp.z),1.0);
-
+   vertex1 = vec4(frag.point1,1.0);
+   vertex2 = vec4(frag.point2,1.0);
+   vertex3 =vec4(frag.point3,1.0);
    normal =interpolatedNormal ;
 }
