@@ -49,5 +49,22 @@ Column {
         text: qsTr("Slider is Epsilon Value used in AO Pass:"+epsilon.value)
     }
 
+    Text {
+        width:300
+        height:64
+        Slider{
+                y:15
+                id: stepSize
+                minimumValue:0.0
+                maximumValue: 2.0
+                stepSize: 0.1
+                tickmarksEnabled: true
+                width:300
+                height:32
+                onValueChanged: launcher.stepValue(stepSize.value)
+        }
+        text: qsTr("Slider is StepSize Value used in AO Pass:"+stepSize.value)
+    }
+
 
 }

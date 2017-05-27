@@ -18,7 +18,8 @@ SOURCES += main.cpp \
     debughelperpass.cpp \
     secondpass.cpp \
     model.cpp \
-    lineshader.cpp
+    lineshader.cpp \
+    mainUI.qml
 
 HEADERS += \
     window.h \

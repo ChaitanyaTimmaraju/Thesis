@@ -81,8 +81,8 @@ void Window::initializeGL() {
   glEnable(GL_DEPTH_TEST);
   glCullFace(GL_BACK);
   // Load all models required
-  const QString objs[] = {"cow"};
-  // m_transform.scale(0.7, 0.7, 0.7);
+  const QString objs[] = {"quad"};
+  m_transform.scale(0.6, 0.6, 0.6);
   // m_transform.rotate(-90.0f, 1.0, 0.0, 0.0);
   m_transform.translate(0.0, 0.0, -2.0);
 
@@ -167,6 +167,11 @@ void Window::draw(GLenum mode,
 void Window::epsilonValue(float temp) {
   objectSP.m_shaderHandlerObject.m_program->bind();
   objectSP.m_shaderHandlerObject.m_program->setUniformValue("EPSILON", temp);
+  objectSP.m_shaderHandlerObject.m_program->release();
+}
+void Window::stepValue(float temp) {
+  objectSP.m_shaderHandlerObject.m_program->bind();
+  objectSP.m_shaderHandlerObject.m_program->setUniformValue("stepSize", temp);
   objectSP.m_shaderHandlerObject.m_program->release();
 }
 

@@ -2,6 +2,7 @@
 
 #include <QOpenGLVertexArrayObject>
 #include <cstdlib>
+#include <ctime>
 #include <QVector3D>
 
 void SecondPass::setUniforms() {
@@ -14,7 +15,7 @@ void SecondPass::setUniforms() {
 
 void SecondPass::initializations(std::vector<ModelLoader*>& models) {
   // Initialize srand with same seed value every time
-  std::srand(32767);
+  std::srand(static_cast<unsigned int>(time(0)));
 
   m_shaderHandlerObject.compileShaders(":/shaders/secondpass.vert", NULL,
                                        ":/shaders/secondpass.frag");
@@ -30,7 +31,7 @@ void SecondPass::initializations(std::vector<ModelLoader*>& models) {
   m_shaderHandlerObject.m_program->setUniformValue("firstPassSamplers[1]", 1);
   m_shaderHandlerObject.m_program->setUniformValue("firstPassSamplers[2]", 2);
   m_shaderHandlerObject.m_program->setUniformValue("firstPassSamplers[3]", 3);
-  m_shaderHandlerObject.m_program->setUniformValue("displayOption", 5);
+  m_shaderHandlerObject.m_program->setUniformValue("displayOption", 8);
   m_shaderHandlerObject.m_program->setUniformValue("EPSILON", -0.0f);
   m_shaderHandlerObject.m_program->setUniformValue("mouseClickRay",
                                                    QVector3D(0.0, 0.0, 1.0));
@@ -55,7 +56,8 @@ void SecondPass::initializations(std::vector<ModelLoader*>& models) {
     temp[2] *= (0.1 + (0.9 * scale * scale));
     temp.normalize();
     // qDebug() << qPrintable("fRandomVectors[" + QString::number(i) +
-    // "]=vec3(")<< temp[0] << "," << temp[1] << "," << temp[2] << ");";
+    // "]=vec3(")
+    //          << temp[0] << "," << temp[1] << "," << temp[2] << ");";
     m_shaderHandlerObject.m_program->setUniformValue(
         uniformName.toStdString().c_str(), temp);
   }

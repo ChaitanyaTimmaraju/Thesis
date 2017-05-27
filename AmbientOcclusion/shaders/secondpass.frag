@@ -28,7 +28,7 @@ bool insideOutTest(vec3 vertex1, vec3 vertex2,vec3 vertex3, vec3 normal,vec3 poi
 {
 
      // Ref: http://www.cs.cornell.edu/courses/cs465/2003fa/homeworks/raytri.pdf
-
+    //To check whether point lies inside the triangle or not.
     //inside-out test
     float point1 = dot((cross(vertex2-vertex1,pointOnTheTriangle-vertex1)),normal);
     float point2 = dot((cross(vertex3-vertex2,pointOnTheTriangle-vertex2)),normal);
@@ -40,8 +40,9 @@ bool insideOutTest(vec3 vertex1, vec3 vertex2,vec3 vertex3, vec3 normal,vec3 poi
     return true;
 }
 
-bool rayTriangleIntersectionGeometricApproach(vec3 origin,vec3 rayDirection,vec2 textureCoords)
+bool rayPlaneIntersectionGeometricApproach(vec3 origin,vec3 rayDirection,vec2 textureCoords)
 {
+
     vec3 vertex1 = texture(firstPassSamplers[0],textureCoords).xyz;
     vec3 vertex2 = texture(firstPassSamplers[1],textureCoords).xyz;
     vec3 vertex3 = texture(firstPassSamplers[2],textureCoords).xyz;
@@ -54,7 +55,6 @@ bool rayTriangleIntersectionGeometricApproach(vec3 origin,vec3 rayDirection,vec2
        t=D-N.Origin/N.RayDir'n
       */
     //Using centroid as our point to compute distance from origin to plane
-
     float D = dot((vertex1+vertex2+vertex3)/3.0,normal);
     float denominator = dot(normal,rayDirection);
     if(denominator==0.0)
@@ -88,16 +88,16 @@ void debugOptions()
                             {
                                 if((vertex1.y>=0.0&&vertex1.y<0.1)||(vertex2.y>=0.0&&vertex2.y<0.1)||(vertex3.y>=0.0&&vertex3.y<0.1))
                                  if(vertex1.z>=-2.0&&vertex1.z<-1.5)
-                                     if(rayTriangleIntersectionGeometricApproach(vec3(0.0,0.0,0.0),vec3(mouseClickRay.xy,-3.0),textureCoords))
+                                     if(rayPlaneIntersectionGeometricApproach(vec3(0.0,0.0,0.0),vec3(mouseClickRay.xy,-3.0),textureCoords))
                                             color.w =1.0;
                                          //   color.xyz = normalize(cross(vertex2-vertex1,vertex3-vertex1));
                            }*/
                             break;
               case 5: /*Check intersection for current eye-space point and the triangle.
-                                    1) white = hit
-                                    2)black = miss
+                                    1) White = hit
+                                    2)Green = miss
                             */
-                           if(rayTriangleIntersectionGeometricApproach(vec3(0.0,0.0,0.0),vec3(mouseClickRay.xy,-3.0),textureCoords))
+                           if(rayPlaneIntersectionGeometricApproach(vec3(0.0,0.0,0.0),vec3(mouseClickRay.xy,-3.0),textureCoords))
                                 color.xyz = vec3(1.0);
                             else
                                 color.xyz = vec3(0.15,0.51,0.34);
@@ -114,25 +114,29 @@ void main(void)
     }else
     {
         //Actual ambient occlusion rendering.
-        vec4 randomVectorDirection;
+        vec4 randomSamplePosition;
         vec2 textureCoords;
         float ambientOcclusionFactor=0.0f;
-        const float MAX_STEP_SIZE = 5.0f;       
+        const float MAX_STEP_SIZE = 0.5;
         for(int currentSample=0;currentSample<(sampleSize);++currentSample)
         {
-                    randomVectorDirection.xyz = f_eyeSpacePositions+(fRandom_Vectors[currentSample])  ;
-                    randomVectorDirection.w = 1.0;
-                    vec4 projectedPoint = worldToView * randomVectorDirection;
-                    textureCoords = projectedPoint.xy/projectedPoint.w;
-                    textureCoords = (textureCoords + 1.0)/2.0;
-                    if(rayTriangleIntersectionGeometricApproach(f_eyeSpacePositions,fRandom_Vectors[currentSample],textureCoords))
-                      {
-                                ambientOcclusionFactor+=1.0;
-                      }
-           }
-       ambientOcclusionFactor /=sampleSize;
-       color= vec4(1.0-ambientOcclusionFactor);
+             for(float stepsize = 0.1;stepsize<MAX_STEP_SIZE;stepsize+=0.1 )
+             {
+                randomSamplePosition.xyz = f_eyeSpacePositions+(fRandom_Vectors[currentSample]*stepsize);
+                randomSamplePosition.w = 1.0;
+                randomSamplePosition = worldToView*randomSamplePosition;
+                randomSamplePosition.xy/=randomSamplePosition.w;
+                textureCoords = (randomSamplePosition.xy+1.0)/2.0;
+                if(rayPlaneIntersectionGeometricApproach(f_eyeSpacePositions,(fRandom_Vectors[currentSample]*stepsize),textureCoords))
+                {
+                    ambientOcclusionFactor+=1.0;
+                    break;
+                }
+             }
+        }
        color.w=1.0;
+       ambientOcclusionFactor/=sampleSize;
+       color.xyz = vec3(1.0-ambientOcclusionFactor);
     }
 
 }
